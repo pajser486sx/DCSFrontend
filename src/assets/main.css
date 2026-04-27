@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* 
+#app {
+  
+} */
+
+@font-face {
+  font-family: 'Lapsus Pro';
+  src: url('./fonts/LapsusPro-Bold.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
