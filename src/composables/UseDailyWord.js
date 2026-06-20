@@ -1,6 +1,9 @@
 import { ref, onMounted } from 'vue'
 
 const dailyWord = ref('')
+const dailyDate = ref('')
+const allWords = ref([])
+const dailyWordObject = ref(null)
 
 export function useDailyWord() {
   const fetchDailyWord = async () => {
@@ -10,12 +13,31 @@ export function useDailyWord() {
       if (!res.ok) {
         throw new Error('Failed to fetch daily word')
       }
+
       const words = await res.json()
 
-      dailyWord.value = words[0]?.word || 'No daily word found'
+      allWords.value = words
+
+      if (words.length > 0) {
+        //newest word display for testing purposes, will change to daily word logic later
+        dailyWordObject.value = words[0]
+        dailyWord.value = words[0].word
+
+        dailyDate.value = new Date(words[0].createdAt).toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        })
+      } else {
+        dailyWord.value = 'No words found'
+        dailyDate.value = ''
+        dailyWordObject.value = null
+      }
     } catch (error) {
       console.error('Error fetching daily word:', error)
       dailyWord.value = 'Error fetching word'
+      dailyDate.value = ''
+      dailyWordObject.value = null
     }
   }
 
@@ -24,7 +46,11 @@ export function useDailyWord() {
   })
 
   return {
-    dailyWord
+    dailyWord,
+    dailyDate,
+    allWords,
+    dailyWordObject,
+    fetchDailyWord
   }
 }
 
