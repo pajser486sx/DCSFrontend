@@ -1,5 +1,35 @@
 import { ref, onMounted } from 'vue'
-import { collection, getDocs } from 'firebase/firestore'
+
+const dailyWord = ref('')
+
+export function useDailyWord() {
+  const fetchDailyWord = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/daily-words`)
+
+      if (!res.ok) {
+        throw new Error('Failed to fetch daily word')
+      }
+      const words = await res.json()
+
+      dailyWord.value = words[0]?.word || 'No daily word found'
+    } catch (error) {
+      console.error('Error fetching daily word:', error)
+      dailyWord.value = 'Error fetching word'
+    }
+  }
+
+  onMounted(() => {
+    fetchDailyWord()
+  })
+
+  return {
+    dailyWord
+  }
+}
+
+
+/* import { collection, getDocs } from 'firebase/firestore'
 import { db } from '@/firebase.js'
 
 export function useDailyWord() {
@@ -38,3 +68,5 @@ export function useDailyWord() {
 
   return { dailyWord, dailyDate }
 }
+
+*/
