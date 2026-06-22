@@ -1,22 +1,20 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { supabase } from '@/supabase.js'
-import { getDocs, collection } from 'firebase/firestore'
-import { db, auth } from '@/firebase.js'
-import { onAuthStateChanged } from 'firebase/auth'
+import { useAuth } from '@/composables/useAuth'
 
 const images = ref([])
 const allWords = ref([])
-const currentUserEmail = ref(null)
-const isAdmin = ref(false)
+const { isAdmin } = useAuth()
 
-onAuthStateChanged(auth, (u) => {
-  currentUserEmail.value = u?.email ?? null
-  isAdmin.value = currentUserEmail.value === 'paja@gmail.com'
-})
 const fetchAllDailyWords = async () => {
-  const snapshot = await getDocs(collection(db, 'dailyWords'))
-  allWords.value = snapshot.docs.map(doc => doc.data().word)
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/daily-words`)
+  if (!res.ok) {
+    console.error('Failed to fetch daily words')
+    return
+  }
+  const words = await res.json()
+  allWords.value = words.map(word => word.word)
 }
 const getWordForDate = (timestamp) => {
   if (!allWords.value.length) return ''

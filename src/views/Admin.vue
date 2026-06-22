@@ -1,38 +1,71 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore'
-import { db } from '@/firebase.js'
+import { useAuth } from '@/composables/useAuth'
 
 const newWord = ref('')
 const dailyWords = ref([])
+const { getAuthHeaders } = useAuth()
+
 const fetchWords = async () => {
-  const snapshot = await getDocs(collection(db, 'dailyWords'))
-  dailyWords.value = snapshot.docs
-    .map(doc => ({
-      id: doc.id,
-      word: doc.data().word,
-      createdAt: doc.data().createdAt?.toDate?.() || new Date(0)
-    }))
-    .sort((a, b) => b.createdAt - a.createdAt)
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/daily-words`)
+
+  if (!res.ok) {
+    alert('Failed to load daily words')
+    return
+  }
+
+  const words = await res.json()
+
+  dailyWords.value = words.map(word => ({
+    id: word._id,
+    word: word.word,
+    createdAt: word.createdAt
+  }))
 }
 
 const submitWord = async () => {
   const trimmed = newWord.value.trim()
   if (!trimmed) return
 
-  await addDoc(collection(db, 'dailyWords'), {
-    word: trimmed,
-    createdAt: new Date()
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/daily-words`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json', ...getAuthHeaders()
+    },
+    body: JSON.stringify({
+      word: trimmed
+    })
   })
+
+  if (!res.ok) {
+    const data = await res.json()
+    alert(data.message || 'Failed to add word')
+    return
+  }
+
   newWord.value = ''
   await fetchWords()
 }
 
 const popLastWord = async () => {
   if (dailyWords.value.length === 0) return
+
   const lastWord = dailyWords.value[0]
-  await deleteDoc(doc(db, 'dailyWords', lastWord.id))
-  fetchWords()
+
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/daily-words/${lastWord.id}`, {
+    method: 'DELETE',
+    headers: {
+      ...getAuthHeaders()
+    }
+  })
+
+  if (!res.ok) {
+    const data = await res.json()
+    alert(data.message || 'Failed to delete word')
+    return
+  }
+
+  await fetchWords()
 }
 
 onMounted(fetchWords)

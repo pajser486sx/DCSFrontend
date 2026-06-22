@@ -46,5 +46,6 @@ router.beforeEach((to) => {
     return { path: '/login' }
   }
   return true
+})
 
 export default router
