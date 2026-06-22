@@ -1,34 +1,27 @@
 <script setup>
 import { ref } from 'vue'
-import { auth } from '@/firebase.js'
-import { signInWithEmailAndPassword } from 'firebase/auth'
 import { RouterLink, useRouter } from 'vue-router'
-  
-const username = ref('')
+import { useAuth } from '@/composables/useAuth'
+
+const email = ref('')
 const password = ref('')
 const router = useRouter()
-
+const { loginUser } = useAuth()
 
 const login = async () => {
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, username.value, password.value)
-    console.log('Logged in as:', userCredential.user.email)
-    alert('Welcome, ' + userCredential.user.email)
-
-     const isAdmin = userCredential.user.email === 'paja@gmail.com'
-    if (isAdmin) {
+    const user = await loginUser(email.value, password.value)
+    alert('Welcome, ' + user.email)
+    if (user.isAdmin) {
       router.push('/admin')
     } else {
       router.push('/Daily')
     }
   } catch (error) {
-    console.error('Auth error:', error.message)
+    console.error('Login error:', error.message)
     alert(error.message)
   }
-   router.push('/Daily')
 }
-
-
 </script>
 
 <template>
@@ -48,7 +41,7 @@ const login = async () => {
             type="text"
             placeholder="Email"
             class="block mb-4 p-2 rounded w-full bg-gray-300 text-black placeholder-black"
-            v-model="username"
+            v-model="email"
           />
           <input
             type="password"

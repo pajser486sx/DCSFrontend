@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { supabase } from '@/supabase.js'
-import { auth } from '@/firebase.js'
+import { useAuth } from '@/composables/useAuth'
 import { useDailyWord } from '@/composables/UseDailyWord'
 
 const title = ref('')
@@ -10,6 +10,7 @@ const previewUrl = ref(null)
 const grayscaleOrColoured = ref('grayscale')
 const digitalOrTraditional = ref('digital')
 const { dailyWord } = useDailyWord()
+const { user, isLoggedIn } = useAuth()
 
 const handleFileChange = (event) => {
   const selected = event.target.files[0]
@@ -24,13 +25,12 @@ const handleUpload = async () => {
     return
   }
 
-  const user = auth.currentUser
-  if (!user) {
-    alert('You must be logged in to upload.')
-    return
-  }
+if (!isLoggedIn.value || !user.value) {
+  alert('You must be logged in to upload.')
+  return
+}
 
-  const filePath = `${user.uid}_${Date.now()}_${file.value.name}`
+const filePath = `${user.value.id}_${Date.now()}_${file.value.name}`
 
   const { error: uploadError } = await supabase.storage
     .from('artworks')

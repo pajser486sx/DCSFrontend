@@ -1,8 +1,7 @@
 <script setup>
 import { useRoute, useRouter, RouterLink } from 'vue-router'
-import { computed, ref, onMounted } from 'vue'
-import { auth } from '@/firebase.js'
-import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { computed } from 'vue'
+import { useAuth } from '@/composables/useAuth'
 
 import ArtButton from './ArtButton.vue'
 import DailyButton from './DailyButton.vue'
@@ -11,28 +10,18 @@ import SearchBar from './SearchBar.vue'
 const router = useRouter()
 const route = useRoute()
 
+const { isLoggedIn, isAdmin, logout } = useAuth()
+
 const showLogo = computed(() =>
   ['coloured', 'grayscale', 'traditional', 'digital', 'login', 'register', 'admin', 'daily', 'upload', 'search'].includes(route.name)
 )
-
-const isAdmin = ref(false)
-const isLoggedIn = ref(false)
-
-onMounted(() => {
-  onAuthStateChanged(auth, (user) => {
-    isLoggedIn.value = !!user
-    isAdmin.value = user?.email === 'paja@gmail.com'
-  })
-})
 
 const goHome = () => router.push('/')
 const goToLogin = () => router.push('/login')
 const goToAdmin = () => router.push('/admin')
 
-const logout = async () => {
-  await signOut(auth)
-  isLoggedIn.value = false
-  isAdmin.value = false
+const handleLogout = () => {
+  logout()
   router.push('/')
 }
 </script>
@@ -80,7 +69,7 @@ const logout = async () => {
 
       <button
         v-if="isLoggedIn"
-        @click="logout"
+        @click="handleLogout"
         class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-800">
         Log Out
       </button>

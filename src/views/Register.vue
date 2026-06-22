@@ -1,36 +1,22 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { auth, db } from '@/firebase.js'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { setDoc, doc, collection, getDocs, query, where } from 'firebase/firestore'
+import { useAuth } from '@/composables/useAuth'
 
 const email = ref('')
 const password = ref('')
 const router = useRouter()
+const { registerUser } = useAuth()
 
 const register = async () => {
   try {
-    const q = query(collection(db, 'users'), where('email', '==', email.value))
-    const snapshot = await getDocs(q)
-    if (snapshot.size > 0) {
-      alert('This email is already taken!')
-      return
-    }
-
     if (!email.value || !password.value) {
       alert('Please fill out all of the fields!')
       return
     }
+    const user = await registerUser(email.value, password.value)
 
-    const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value)
-    const uid = userCredential.user.uid
-    
-    await setDoc(doc(db, 'users', uid), {
-      email: email.value
-    })
-
-    alert(`Welcome, ${email.value}!`)
+    alert(`Welcome, ${user.email}!`)
     router.push('/Daily')
   } catch (error) {
     console.error('Registration error:', error.message)
