@@ -105,7 +105,7 @@ onMounted(async () => {
         <p class="text-sm opacity-70">Uploaded by: {{ image.uploaded_by }}</p>
         <p class="text-sm opacity-60">{{ formatDate(image.created_at) }}</p>
         <p class="text-sm opacity-50 italic">
-          Daily word on that day: "{{ getWordForDate(image.created_at) }}"
+          Daily word on that day: "{{ image.daily_word || 'No daily word saved' }}"
         </p>
 
         <div class="mt-2 flex flex-wrap gap-2">
