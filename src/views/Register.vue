@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 
+const username = ref('')
 const email = ref('')
 const password = ref('')
 const router = useRouter()
@@ -10,11 +11,11 @@ const { registerUser } = useAuth()
 
 const register = async () => {
   try {
-    if (!email.value || !password.value) {
-      alert('Please fill out all of the fields!')
+    if (!username.value || !email.value || !password.value) {
+    alert('Please fill out all of the fields!')
       return
     }
-    const user = await registerUser(email.value, password.value)
+    const user = await registerUser(username.value, email.value, password.value)
 
     alert(`Welcome, ${user.email}!`)
     router.push('/Daily')
@@ -35,6 +36,12 @@ const register = async () => {
       <h2 class="text-2xl mb-6 text-center">REGISTER</h2>
 
       <form @submit.prevent="register">
+      <input
+          v-model="username"
+          type="text"
+          placeholder="Username"
+          class="block mb-4 p-2 rounded w-full bg-gray-300 text-black placeholder-black"
+        />
         <input
           v-model="email"
           type="email"
