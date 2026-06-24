@@ -53,7 +53,7 @@ const { error: dbError } = await supabase
     title: title.value,
     url: urlData.publicUrl,
     tags,
-    uploaded_by: user.email,
+    uploaded_by: user.value.username || user.value.email,
     created_at: new Date(),
     daily_word: dailyWord.value
   }])
