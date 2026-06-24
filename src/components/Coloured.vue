@@ -66,10 +66,7 @@ const deleteImage = async (image) => {
   }
 }
 
-onMounted(async () => {
-  await fetchAllDailyWords()
-  await fetchColouredImages()
-})
+onMounted(fetchColouredImages)
 </script>
 
 <template>

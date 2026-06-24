@@ -40,10 +40,15 @@ router.beforeEach((to) => {
 
   const user = storedUser ? JSON.parse(storedUser) : null
   const isLoggedIn = !!storedToken && !!user
+  const isAdmin = user?.isAdmin === true
 
   if (protectedUploadRoute && !isLoggedIn) {
     alert('Please log in to upload.')
     return { path: '/login' }
+  }
+  if (protectedAdminRoute && (!isLoggedIn || !isAdmin)) {
+    alert('Admin access required.')
+    return { path: '/' }
   }
   return true
 })

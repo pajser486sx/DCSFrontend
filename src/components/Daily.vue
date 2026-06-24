@@ -32,7 +32,7 @@ watchEffect(() => {
   <div class="p-6 text-center">
     <h2 class="text-3xl font-bold mb-2" style="font-family: 'Lapsus Pro'">Today's daily word is:</h2>
     <p class="text-8xl text-white drop-shadow-[0_0_3px_black] uppercase" style="font-family: 'Lapsus Pro'">{{ dailyWord }}</p>
-    <p class="text-white text-xl mt-2">Date: {{ dailyDate }}</p>
+    <p class="text-xl mt-2 text-white drop-shadow-[0_0_3px_black] uppercase" style="font-family: 'Lapsus Pro'">{{ dailyDate }}</p>
   </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
   <div
