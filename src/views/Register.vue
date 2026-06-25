@@ -18,7 +18,7 @@ const register = async () => {
     const user = await registerUser(username.value, email.value, password.value)
 
     alert(`Welcome, ${user.email}!`)
-    router.push('/Daily')
+    router.push('/daily')
   } catch (error) {
     console.error('Registration error:', error.message)
     alert(error.message)

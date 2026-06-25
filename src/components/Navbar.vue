@@ -55,7 +55,7 @@ const handleLogout = () => {
 
       <RouterLink
         v-if="isLoggedIn"
-        to="/Upload"
+        to="/upload"
         class="bg-white text-black px-3 py-1 rounded hover:bg-gray-300">
         Upload
       </RouterLink>

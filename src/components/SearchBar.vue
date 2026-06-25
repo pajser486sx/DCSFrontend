@@ -7,7 +7,7 @@ const router = useRouter()
 const goSearch = () => {
   const q = query.value.trim()
   if (!q) return
-  router.push({ name: 'search', query: { q } })
+  router.push({ name: 'search', query: { q, page: 1 } })
 }
 </script>
 

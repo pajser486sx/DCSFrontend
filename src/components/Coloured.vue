@@ -4,24 +4,8 @@ import { supabase } from '@/supabase.js'
 import { useAuth } from '@/composables/useAuth'
 
 const images = ref([])
-const allWords = ref([])
 const { isAdmin } = useAuth()
 
-const fetchAllDailyWords = async () => {
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/daily-words`)
-  if (!res.ok) {
-    console.error('Failed to fetch daily words')
-    return
-  }
-  const words = await res.json()
-  allWords.value = words.map(word => word.word)
-}
-const getWordForDate = (timestamp) => {
-  if (!allWords.value.length) return ''
-  const dayIndex = Math.floor(new Date(timestamp).getTime() / (1000 * 60 * 60 * 24))
-  const wordIndex = dayIndex % allWords.value.length
-  return allWords.value[wordIndex]
-}
 const formatDate = (timestamp) => {
   const date = new Date(timestamp)
   return date.toLocaleString()
@@ -65,7 +49,6 @@ const deleteImage = async (image) => {
     deletingIds.value.delete(image.id)
   }
 }
-
 onMounted(fetchColouredImages)
 </script>
 

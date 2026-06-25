@@ -15,7 +15,7 @@ const login = async () => {
     if (user.isAdmin) {
       router.push('/admin')
     } else {
-      router.push('/Daily')
+      router.push('/daily')
     }
   } catch (error) {
     console.error('Login error:', error.message)
@@ -57,7 +57,7 @@ const login = async () => {
 
       <p class="mt-4 text-yellow-300 bg-black px-4 py-2 rounded uppercase" style="font-family: 'Lapsus Pro'">
         Don’t have an account?
-        <RouterLink to="/Register" class="underline text-white hover:text-gray-400">
+        <RouterLink to="/register" class="underline text-white hover:text-gray-400">
           Register
         </RouterLink>
       </p>
